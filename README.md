@@ -2,10 +2,51 @@
 
 Lokale Web-App zum Verarbeiten von Ausgabenbelegen fuer die Vereinsbuchhaltung.
 
-## Start
+## Installation auf einem neuen Rechner
+
+### 1. Voraussetzungen installieren
+
+- Python 3.12 installieren: https://www.python.org/downloads/
+- Beim Python-Setup die Option `Add python.exe to PATH` aktivieren.
+- Optional Git installieren: https://git-scm.com/download/win
+
+Python 3.12 ist empfohlen, weil die App aktuell noch das Python-Modul `cgi` nutzt. Python 3.13 kann damit Probleme machen.
+
+### 2. Projekt herunterladen
+
+Mit Git:
 
 ```powershell
-& "C:\Users\Lars\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" .\buchhaltung_app.py
+git clone https://github.com/lala1408/buchhaltung-tool.git
+cd buchhaltung-tool
+```
+
+Ohne Git:
+
+1. Auf GitHub `Code` -> `Download ZIP` auswaehlen.
+2. ZIP entpacken.
+3. PowerShell im entpackten Ordner oeffnen.
+
+### 3. Virtuelle Python-Umgebung erstellen
+
+```powershell
+py -3.12 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+Falls PowerShell das Aktivieren blockiert:
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+.\.venv\Scripts\Activate.ps1
+```
+
+### 4. App starten
+
+```powershell
+python .\buchhaltung_app.py
 ```
 
 Danach im Browser oeffnen:
@@ -13,6 +54,13 @@ Danach im Browser oeffnen:
 ```text
 http://127.0.0.1:8501
 ```
+
+### 5. Erste Einrichtung
+
+1. Im Feld `Buchhaltungs-Excel` den Pfad zur lokalen Excel-Datei eintragen.
+   Beispiel: `C:\Users\Lars\Downloads\SFK-Buchhaltung ab 2022.xlsx`
+2. Die App speichert diesen Pfad in `config.json`.
+3. `config.json`, `backups`, `outputs` und `work` werden nicht zu GitHub hochgeladen.
 
 ## Ablauf
 
