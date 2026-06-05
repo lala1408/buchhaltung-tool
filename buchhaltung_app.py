@@ -351,6 +351,44 @@ def guess_date(text: str) -> str:
     return matches[0][1].isoformat()
 
 
+def parse_date_value(raw: str) -> str:
+    raw = raw.strip()
+    for fmt in ("%d.%m.%Y", "%Y-%m-%d"):
+        try:
+            return datetime.strptime(raw, fmt).date().isoformat()
+        except ValueError:
+            continue
+    return ""
+
+
+def find_labeled_date(text: str, labels: list[str]) -> str:
+    compact = " ".join(text.split())
+    date_pattern = r"(\d{2}\.\d{2}\.20\d{2}|20\d{2}-\d{2}-\d{2})"
+    for label in labels:
+        pattern = rf"{label}[^\d]{{0,80}}{date_pattern}"
+        match = re.search(pattern, compact, re.IGNORECASE)
+        if match:
+            parsed = parse_date_value(match.group(1))
+            if parsed:
+                return parsed
+    return ""
+
+
+def guess_transfer_booking_date(transfer_text: str) -> str:
+    value_date = find_labeled_date(
+        transfer_text,
+        [
+            r"Wertstellung\s*\(Valuta\)",
+            r"Wertstellung",
+            r"Valutatag",
+            r"Valuta",
+        ],
+    )
+    if value_date:
+        return value_date
+    return find_labeled_date(transfer_text, [r"Buchungstag", r"Buchungsdatum"])
+
+
 def guess_description(text: str, proof_filename: str) -> str:
     normalized = " ".join(text.split())
     item_patterns = [
@@ -375,7 +413,7 @@ def analyze_pdfs(transfer_pdf: Path, proof_pdf: Path) -> PdfSuggestion:
     proof_text = extract_pdf_text(proof_pdf)
     combined_text = f"{transfer_text}\n{proof_text}"
     amount = guess_amount(combined_text)
-    date_value = guess_date(combined_text)
+    date_value = guess_transfer_booking_date(transfer_text)
     description = guess_description(combined_text, proof_pdf.name)
     notes = []
     if len(" ".join(transfer_text.split())) < 20:
@@ -383,7 +421,7 @@ def analyze_pdfs(transfer_pdf: Path, proof_pdf: Path) -> PdfSuggestion:
     if not amount:
         notes.append("Kein Betrag erkannt.")
     if not date_value:
-        notes.append("Kein Datum erkannt.")
+        notes.append("Kein Wertstellungstag oder Buchungstag im Ueberweisungsbeleg erkannt.")
     preview = " ".join(combined_text.split())[:1200]
     return PdfSuggestion(amount, date_value, description, notes, preview)
 
@@ -777,7 +815,7 @@ def analysis_page(
 ) -> bytes:
     description = wb_suggestion.existing_text or pdf_suggestion.description
     amount = wb_suggestion.existing_amount or pdf_suggestion.amount
-    date_value = wb_suggestion.existing_date or pdf_suggestion.date_value or datetime.now().date().isoformat()
+    date_value = wb_suggestion.existing_date or pdf_suggestion.date_value
     category = wb_suggestion.existing_category or "3"
     payment = wb_suggestion.existing_payment or payment_fallback or "Überweisung"
     warning_lines = []

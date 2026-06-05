@@ -59,7 +59,7 @@ http://127.0.0.1:8501
 
 1. Im Feld `Buchhaltungs-Excel` den Pfad zur lokalen Excel-Datei eintragen.
    Beispiel: `C:\Users\Lars\Downloads\SFK-Buchhaltung ab 2022.xlsx`
-2. Die App speichert diesen Pfad in `config.json`.
+2. Die App speichert diesen Pfad in `config.json` und nutzt ihn nach einem Neustart wieder.
 3. `config.json`, `backups`, `outputs` und `work` werden nicht zu GitHub hochgeladen.
 
 ## Ablauf
@@ -80,5 +80,8 @@ Wenn die Checkbox aktiv ist, aktualisiert die App die konfigurierte Excel-Datei 
 - PDF-Zusammenfuehrung in der Reihenfolge Ueberweisung, danach Nachweis
 - Rote, eingekreiste Belegnummer nur auf den Seiten des Ueberweisungsbelegs
 - Eintrag in die Ausgangsspalten der Excel
+- Datum aus dem Ueberweisungsbeleg: zuerst Wertstellung/Valuta, sonst Buchungstag
+
+Bei bildbasierten oder eingescannten Bank-PDFs kann das Datum eventuell nicht automatisch gelesen werden. Dann bleibt das Datumsfeld in der Vorschau leer und muss manuell gesetzt werden.
 
 Eingaenge (`E-2026-xx`) sind noch nicht automatisiert.
