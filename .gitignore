@@ -1,0 +1,6 @@
+work/
+outputs/
+backups/
+config.json
+__pycache__/
+*.pyc
