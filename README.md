@@ -55,12 +55,38 @@ Danach im Browser oeffnen:
 http://127.0.0.1:8501
 ```
 
+### 4a. Komfort-Start mit Fenster
+
+Alternativ startet der Launcher die App und oeffnet den Browser automatisch:
+
+```powershell
+python .\buchhaltung_launcher.py
+```
+
 ### 5. Erste Einrichtung
 
 1. Im Feld `Buchhaltungs-Excel` den Pfad zur lokalen Excel-Datei eintragen.
    Beispiel: `C:\Users\Lars\Downloads\SFK-Buchhaltung ab 2022.xlsx`
 2. Die App speichert diesen Pfad in `config.json` und nutzt ihn nach einem Neustart wieder.
 3. `config.json`, `backups`, `outputs` und `work` werden nicht zu GitHub hochgeladen.
+
+## Windows-EXE bauen
+
+Auf einem eingerichteten Rechner:
+
+```powershell
+.\build_exe.ps1
+```
+
+Danach liegt die Doppelklick-Anwendung hier:
+
+```text
+dist\SFK-Buchhaltung.exe
+```
+
+Die `.exe` startet einen lokalen Server, oeffnet den Browser automatisch und zeigt ein Hinweisfenster. Dieses Fenster offen lassen, solange du arbeitest; `OK` beendet die App.
+
+Wenn die `.exe` in einen anderen Ordner kopiert wird, legt sie `config.json`, `backups`, `outputs` und `work` neben der `.exe` an.
 
 ## Ablauf
 

@@ -27,7 +27,10 @@ from reportlab.lib.colors import HexColor
 from reportlab.pdfgen import canvas
 
 
-APP_DIR = Path(__file__).resolve().parent
+if getattr(sys, "frozen", False):
+    APP_DIR = Path(sys.executable).resolve().parent
+else:
+    APP_DIR = Path(__file__).resolve().parent
 SESSIONS_DIR = APP_DIR / "work" / "sessions"
 OUTPUTS_DIR = APP_DIR / "outputs"
 BACKUPS_DIR = APP_DIR / "backups"
@@ -1132,7 +1135,8 @@ class AccountingRequestHandler(BaseHTTPRequestHandler):
         self.wfile.write(data)
 
     def log_message(self, format: str, *args: Any) -> None:
-        sys.stdout.write("%s - %s\n" % (self.address_string(), format % args))
+        if sys.stdout is not None:
+            sys.stdout.write("%s - %s\n" % (self.address_string(), format % args))
 
 
 def main() -> None:
